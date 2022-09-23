@@ -145,6 +145,36 @@ macroscript L_MaxCoordsysCreate category:"L" toolTip:"Create coordsys" buttonTex
 						append edgesPoints edgePoints
 					)
 				)
+			)else if classof(theObj) == PolyMeshObject then(
+				currentMod = modpanel.getCurrentObject()
+
+				if classof(currentMod) != Edit_Poly then (
+					print("Currently only Edit Poly modifier is supported")
+					return ()
+				)
+
+				edgesSelection = (currentMod.GetSelection #Edge) as array
+
+				print ("Count: ")
+				print (edgesSelection.count )
+
+				if (edgesSelection.count < 1) or (edgesSelection.count > 3) then (
+					print "Wrong selected edge count! Should be 1,2,or 3!"
+					return()
+				)else(
+					--extract point pairs
+					for i = 1 to edgesSelection.count do (
+						theVerts = #()
+						theVerts[1] = currentMod.GetEdgeVertex edgesSelection[i] 1
+						theVerts[2] = currentMod.GetEdgeVertex edgesSelection[i] 2
+						
+						Mat = theObj.transform
+						edgePoints = #(((currentMod.GetVertex theVerts[1]) ),  ((currentMod.GetVertex theVerts[2]) ))
+						
+						append edgesPoints edgePoints
+					)
+				)
+				
 			)else if classof(theObj) == Editable_Mesh then(
 				print "Mesh selected"
 				edgesSelection = (getEdgeSelection theObj) as array
